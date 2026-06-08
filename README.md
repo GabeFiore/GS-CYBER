@@ -33,10 +33,7 @@ Esta implementação teve como objetivo integrar práticas de DevSecOps ao proje
 
 Para isso foram cadastrados os seguintes segredos no GitHub:
 
-- DB_SERVER
-- DB_NAME
-- DB_USER
-- DB_PASSWORD
+![Repository Secrets](Evidencias/repository_secrets.png)
 
 Esses valores são armazenados de forma criptografada pelo GitHub e não ficam expostos no código-fonte.
 
@@ -75,6 +72,15 @@ Dessa forma, nenhuma senha precisa permanecer armazenada no código-fonte.
 #### 3. Build da Aplicação
 
 Após a validação de segurança, o projeto é compilado automaticamente para garantir sua integridade.
+
+## Evidências:
+### Pipeline Falhando após Scan GitLeaks
+![Pipeline Falhou](Evidencias/scan-gitleaks.png)
+### Pipeline Aprovado após Correção
+![Pipeline Aprovado Após Correção](Evidencias/correcao.png)
+### Mini Simulação
+![Novo teste de simulação](Evidencias/mini-simulacao-nova.png)
+
 
 ## Conexão com o Projeto e com os ODS
 
