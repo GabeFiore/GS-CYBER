@@ -1,0 +1,55 @@
+name: CI - DevSecOps AgroShield
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Baixa o código do repositório na máquina virtual
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # CONTROLE DE SEGURANÇA: detecta senhas e tokens expostos no código
+      - name: Scan de segredos expostos (GitLeaks)
+        run: |
+          wget -q https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz
+          tar -xzf gitleaks_8.18.4_linux_x64.tar.gz
+          ./gitleaks detect --source . --no-git --verbose --exit-code 1
+
+      # Instala o .NET 8 na máquina virtual do GitHub
+      - name: Configurar .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Gera appsettings de CI usando GitHub Secrets — nunca hardcoded
+      - name: Injetar segredos do GitHub Secrets
+        run: |
+          cat > AgroShield.AlertEngine.Api/appsettings.CI.json << EOF
+          {
+            "ConnectionStrings": {
+              "DefaultConnection": "Server=${{ secrets.DB_SERVER }};Database=${{ secrets.DB_NAME }};User=${{ secrets.DB_USER }};Password=${{ secrets.DB_PASSWORD }};SslMode=None;AllowPublicKeyRetrieval=True"
+            }
+          }
+          EOF
+          echo "appsettings.CI.json gerado com segredos do GitHub Secrets"
+
+      - name: Restaurar dependências
+        run: dotnet restore AgroShield.AlertEngine.Api/AgroShield.AlertEngine.Api.csproj
+
+      - name: Build do projeto
+        run: dotnet build AgroShield.AlertEngine.Api/AgroShield.AlertEngine.Api.csproj --no-restore --configuration Release
+
+      - name: Build dos testes
+        run: dotnet build AgroShield.AlertEngine.Api.Tests/AgroShield.AlertEngine.Api.Tests.csproj --configuration Release
+
+      - name: Rodar testes unitários
+        run: dotnet test AgroShield.AlertEngine.Api.Tests/AgroShield.AlertEngine.Api.Tests.csproj --no-build --verbosity normal --configuration Release
