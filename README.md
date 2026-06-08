@@ -41,9 +41,7 @@ Esses valores são armazenados de forma criptografada pelo GitHub e não ficam e
 
 Foi criado o arquivo:
 
-```text
-.github/workflows/ci-devsecops.yml
-```
+[ci-devsecops.yml](./.github/workflows/ci-devsecops.yml)
 
 O pipeline executa automaticamente a cada:
 
@@ -74,7 +72,7 @@ Dessa forma, nenhuma senha precisa permanecer armazenada no código-fonte.
 Após a validação de segurança, o projeto é compilado automaticamente para garantir sua integridade.
 
 ## Evidências:
-### Pipeline Falhando após Scan GitLeaks
+### Pipeline Falhando após Scan GitLeaks e Vulnerabilidade Encontrada
 ![Pipeline Falhou](Evidencias/scan-gitleaks.png)
 ### Pipeline Aprovado após Correção
 ![Pipeline Aprovado Após Correção](Evidencias/correcao.png)
