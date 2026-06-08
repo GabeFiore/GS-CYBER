@@ -1,0 +1,23 @@
+title = "AgroShield - GitLeaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  "README.md"
+]
+
+[[rules]]
+id = "agroshield-connection-string"
+description = "Detecta senhas reais em connection strings do AgroShield"
+regex = '''Password=[^;#\$\{<][^;]{2,}'''
+tags = ["secret", "database"]
+severity = "HIGH"
+
+[[rules]]
+id = "github-pat-custom"
+description = "Detecta GitHub Personal Access Tokens"
+regex = '''ghp_[a-zA-Z0-9]{36}'''
+tags = ["secret", "token"]
+severity = "CRITICAL"
